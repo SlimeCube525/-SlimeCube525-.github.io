@@ -417,11 +417,10 @@
         <div class="content" id="editable-content">
             <h2>专栏内容</h2>
             <div class="empty-content">未添加任何内容</div>
-            <div class="edit-controls" id="edit-controls">
+            <div class="edit-controls" id="edit-controls" style="display:none;">
                 <button class="save-btn" onclick="saveContent()">保存内容</button>
             </div>
         </div>
-        
         <div class="content-card">
             <h2>特色内容预览</h2>
             <p>以下是未来可能添加的特色内容：</p>
@@ -440,7 +439,7 @@
                 <h3>关于闹式区</h3>
                 <p>闹式区是一个专注于发现和分享各种猎奇、独特内容的平台。我们致力于挖掘古军池、蔡大妈等私人奇形内容。</p>
                 <div class="signature">
-                    ©2025-闹式区&nbsp;&nbsp;&nbsp;&nbsp;制作：史不食莱姆&nbsp;&nbsp;&nbsp;&nbsp;技术支持：Sky_2
+                    #2025-闹式区&nbsp;&nbsp;&nbsp;&nbsp;制作：史不食莱姆&nbsp;&nbsp;&nbsp;&nbsp;技术支持：Sky_2
                 </div>
             </div>
             
@@ -461,7 +460,6 @@
                     <p>输入密码编辑专栏内容：</p>
                     <input type="password" id="admin-password" class="password-input" placeholder="输入密码">
                     <button class="submit-btn" onclick="checkPassword()">提交</button>
-                    <p style="margin-top: 15px; font-size: 0.9em; opacity: 0.8;">提示：密码为 "Sky_2"</p>
                 </div>
             </div>
         </div>
@@ -471,9 +469,9 @@
   const firebaseConfig = {
     apiKey: “AIzaSyD6tzpvfNuDPDS32o6F8gwKd3lZ1_HgeqY”，
     authDomain: “naoshiqu-bdfea.firebaseapp.com”，
-    databaseURL: “https://naoshiqu-bdfea-default-rtdb.asia-southeast1.firebasedatabase.app”，
+    databaseURL: “https://naoshiqu-bdfea-default-rtdb.asia-southeast1.firebasedatabase.com”，
     projectId: “naoshiqu-bdfea”，
-    storageBucket: “naoshiqu-bdfea.firebasestorage.app”，
+    storageBucket: “naoshiqu-bdfea.firebasestorage.com”，
     messagingSenderId: “643997744790”，
     appId: “1：643997744790：web：a810a670f1ccc6ffce4cb7”
   };
