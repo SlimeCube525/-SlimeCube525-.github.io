@@ -416,53 +416,116 @@
             </div>
         </div>
     </footer>
+<script>
+// 替换为您的Firebase配置（从控制台获取）
+  const firebaseConfig = {
+    apiKey: "AIzaSyABCDEFGHIJKLMNOPQRSTUVWXYZ12345678",
+    authDomain: "your-project-id.firebaseapp.com",
+    databaseURL: "https://your-project-id.firebaseio.com",
+    projectId: "your-project-id",
+    storageBucket: "your-project-id.appspot.com",
+    messagingSenderId: "123456789012",
+    appId: "1:123456789012:web:abcdef1234567890abcdef"
+  };
 
-    <script>
-        function checkPassword() {
-            const password = document.getElementById('admin-password').value;
-            const correctPassword = "Sky_2";
-            const contentDiv = document.getElementById('editable-content');
-            const editControls = document.getElementById('edit-controls');
-            
-            if (password === correctPassword) {
-                // 进入编辑模式
-                contentDiv.classList.add('edit-mode');
-                contentDiv.contentEditable = 'true';
-                editControls.style.display = 'block';
-                
-                // 如果内容是"未添加任何内容"，清空以便编辑
-                const emptyDiv = contentDiv.querySelector('.empty-content');
-                if (emptyDiv && emptyDiv.textContent === '未添加任何内容') {
-                    emptyDiv.textContent = '';
-                }
-                
-                alert("您现在可以编辑专栏内容了！编辑完成后请点击保存按钮。");
-            } else {
-                alert("密码错误，请重试！");
-            }
-            
-            document.getElementById('admin-password').value = '';
+  // 初始化Firebase
+  const app = firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+
+  // 检查密码并进入编辑模式
+  function checkPassword() {
+    const password = document.getElementById('admin-password').value;
+    const correctPassword = "Sky_2";
+    const contentDiv = document.getElementById('editable-content');
+    const editControls = document.getElementById('edit-controls');
+    
+    if (password === correctPassword) {
+      // 显示加载状态
+      contentDiv.innerHTML = '<div style="text-align:center;padding:20px;">加载中...</div>';
+      
+      // 从Firebase加载内容
+      database.ref('naoshiContent').once('value').then((snapshot) => {
+        if (snapshot.exists()) {
+          const content = snapshot.val();
+          contentDiv.innerHTML = content || '<div class="empty-content">未添加任何内容</div>';
+        } else {
+          contentDiv.innerHTML = '<div class="empty-content">未添加任何内容</div>';
         }
         
-        function saveContent() {
-            const contentDiv = document.getElementById('editable-content');
-            const editControls = document.getElementById('edit-controls');
-            
-            // 退出编辑模式
-            contentDiv.classList.remove('edit-mode');
-            contentDiv.contentEditable = 'false';
-            editControls.style.display = 'none';
-            
-            // 如果内容为空，恢复默认提示
-            if (!contentDiv.textContent.trim() || contentDiv.textContent.trim() === '专栏内容') {
-                const emptyDiv = document.createElement('div');
-                emptyDiv.className = 'empty-content';
-                emptyDiv.textContent = '未添加任何内容';
-                contentDiv.appendChild(emptyDiv);
-            }
-            
-            alert('内容已保存（仅本次有效，刷新后不会保留）');
+        // 进入编辑模式
+        contentDiv.classList.add('edit-mode');
+        contentDiv.contentEditable = 'true';
+        editControls.style.display = 'block';
+        alert("您现在可以编辑专栏内容了！编辑完成后请点击保存按钮。");
+      }).catch((error) => {
+        contentDiv.innerHTML = '<div class="empty-content">内容加载失败，请刷新重试</div>';
+        console.error("加载错误:", error);
+      });
+      
+    } else {
+      alert("密码错误，请重试！");
+    }
+    
+    document.getElementById('admin-password').value = '';
+  }
+
+  // 保存内容到Firebase
+  function saveContent() {
+    const contentDiv = document.getElementById('editable-content');
+    const editControls = document.getElementById('edit-controls');
+    
+    // 显示保存状态
+    const originalContent = contentDiv.innerHTML;
+    contentDiv.innerHTML = originalContent + '<div style="text-align:center;color:#666;">保存中...</div>';
+    
+    // 保存到Firebase
+    database.ref('naoshiContent').set(originalContent)
+      .then(() => {
+        // 保存成功
+        contentDiv.innerHTML = originalContent;
+        contentDiv.classList.remove('edit-mode');
+        contentDiv.contentEditable = 'false';
+        editControls.style.display = 'none';
+        
+        // 检查是否为空内容
+        if (!contentDiv.textContent.trim() || contentDiv.textContent.trim() === '专栏内容') {
+          const emptyDiv = document.createElement('div');
+          emptyDiv.className = 'empty-content';
+          emptyDiv.textContent = '未添加任何内容';
+          contentDiv.appendChild(emptyDiv);
         }
-    </script>
+        
+        alert("内容已永久保存！");
+      })
+      .catch((error) => {
+        // 保存失败
+        contentDiv.innerHTML = originalContent;
+        alert("保存失败: " + error.message);
+        console.error("保存错误:", error);
+      });
+  }
+
+  // 页面加载时自动从Firebase加载内容
+  window.onload = function() {
+    const contentDiv = document.getElementById('editable-content');
+    contentDiv.innerHTML = '<div style="text-align:center;padding:20px;">加载中...</div>';
+    
+    database.ref('naoshiContent').once('value').then((snapshot) => {
+      if (snapshot.exists()) {
+        const content = snapshot.val();
+        if (content && content.trim() && content !== '未添加任何内容') {
+          contentDiv.innerHTML = content;
+        } else {
+          contentDiv.innerHTML = '<div class="empty-content">未添加任何内容</div>';
+        }
+      } else {
+        contentDiv.innerHTML = '<div class="empty-content">未添加任何内容</div>';
+      }
+    }).catch((error) => {
+      contentDiv.innerHTML = '<div class="empty-content">内容加载失败，请刷新重试</div>';
+      console.error("加载错误:", error);
+    });
+  };
+</script>
 </body>
 </html>
