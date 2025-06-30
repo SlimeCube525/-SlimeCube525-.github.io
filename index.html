@@ -417,52 +417,92 @@
         </div>
     </footer>
 
+        <!-- 在 <head> 里添加 Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
+    
     <script>
-        function checkPassword() {
-            const password = document.getElementById('admin-password').value;
-            const correctPassword = "Sky_2";
-            const contentDiv = document.getElementById('editable-content');
-            const editControls = document.getElementById('edit-controls');
-            
-            if (password === correctPassword) {
-                // 进入编辑模式
-                contentDiv.classList.add('edit-mode');
-                contentDiv.contentEditable = 'true';
-                editControls.style.display = 'block';
-                
-                // 如果内容是"未添加任何内容"，清空以便编辑
-                const emptyDiv = contentDiv.querySelector('.empty-content');
-                if (emptyDiv && emptyDiv.textContent === '未添加任何内容') {
-                    emptyDiv.textContent = '';
+    // Firebase 配置
+    const firebaseConfig = {
+        apiKey: "AIzaSyD6tzpvfNuDPDS32o6F8gwKd3lZ1_HgeqY"，
+        authDomain: "naoshiqu-bdfea.firebaseapp.com"，
+        databaseURL: "https://naoshiqu-bdfea-default-rtdb.asia-southeast1.firebasedatabase.app"，
+        projectId: "naoshiqu-bdfea"，
+        storageBucket: "naoshiqu-bdfea.firebasestorage.app"，
+        messagingSenderId: "643997744790"，
+        appId: "1：643997744790：web：a810a670f1ccc6ffce4cb7"
+    };
+    
+    // 初始化 Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    
+    // 检查密码并进入编辑模式
+    function checkPassword() {
+        const password = document.getElementById('admin-password').value;
+        const correctPassword = "Sky_2";
+        const contentDiv = document.getElementById('editable-content');
+        const editControls = document.getElementById('edit-controls');
+        
+        if (password === correctPassword) {
+            // 从 Firebase 加载内容
+            database.ref('naoshiContent').once('value').then((snapshot) => {
+                if (snapshot.exists()) {
+                    contentDiv.innerHTML = snapshot.val();
                 }
-                
-                alert("您现在可以编辑专栏内容了！编辑完成后请点击保存按钮。");
-            } else {
-                alert("密码错误，请重试！");
+            });
+            
+            // 进入编辑模式
+            contentDiv.classList.add('edit-mode');
+            contentDiv.contentEditable = 'true';
+            editControls.style.display = 'block';
+            
+            // 如果内容是"未添加任何内容"，清空以便编辑
+            const emptyDiv = contentDiv.querySelector('.empty-content');
+            if (emptyDiv && emptyDiv.textContent === '未添加任何内容') {
+                emptyDiv.textContent = '';
             }
             
-            document.getElementById('admin-password').value = '';
+            alert("您现在可以编辑专栏内容了！编辑完成后请点击保存按钮。");
+        } else {
+            alert("密码错误，请重试！");
         }
         
-        function saveContent() {
-            const contentDiv = document.getElementById('editable-content');
-            const editControls = document.getElementById('edit-controls');
-            
-            // 退出编辑模式
-            contentDiv.classList.remove('edit-mode');
-            contentDiv.contentEditable = 'false';
-            editControls.style.display = 'none';
-            
-            // 如果内容为空，恢复默认提示
-            if (!contentDiv.textContent.trim() || contentDiv.textContent.trim() === '专栏内容') {
-                const emptyDiv = document.createElement('div');
-                emptyDiv.className = 'empty-content';
-                emptyDiv.textContent = '未添加任何内容';
-                contentDiv.appendChild(emptyDiv);
-            }
-            
-            alert('内容已保存（仅本次有效，刷新后不会保留）');
+        document.getElementById('admin-password').value = '';
+    }
+    
+    // 保存内容到 Firebase
+    function saveContent() {
+        const contentDiv = document.getElementById('editable-content');
+        const editControls = document.getElementById('edit-controls');
+        
+        // 保存到 Firebase
+        database.ref('naoshiContent').set(contentDiv.innerHTML)
+            .then(() => alert("内容已保存！多设备同步生效。"))
+            .catch((error) => alert("保存失败: " + error.message));
+        
+        // 退出编辑模式
+        contentDiv.classList.remove('edit-mode');
+        contentDiv.contentEditable = 'false';
+        editControls.style.display = 'none';
+        
+        // 如果内容为空，恢复默认提示
+        if (!contentDiv.textContent.trim() || contentDiv.textContent.trim() === '专栏内容') {
+            const emptyDiv = document.createElement('div');
+            emptyDiv.className = 'empty-content';
+            emptyDiv.textContent = '未添加任何内容';
+            contentDiv.appendChild(emptyDiv);
         }
+    }
+    
+    // 页面加载时自动从 Firebase 加载内容
+    window.onload = function() {
+        database.ref('naoshiContent').once('value').then((snapshot) => {
+            if (snapshot.exists()) {
+                document.getElementById('editable-content').innerHTML = snapshot.val();
+            }
+        });
+    };
     </script>
 </body>
 </html>
