@@ -1,10 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <!-- 在<head>中添加 -->
-    <link rel="preconnect" href="https://firebasedatabase.app">
-    <link rel="preload" href="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js" as="script">
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
     <meta charset="UTF-8">
@@ -358,80 +354,59 @@
             
             h1 {
                 font-size: 2.5rem;
-            /* 加载状态样式 */
-            .loading-indicator {
-              text-align: center;
-              padding: 20px;
-              color: #666;
-              font-style: italic;
             }
-            
-            /* 错误状态样式 */
-            .error-message {
-              color: #e74c3c;
-              text-align: center;
-              padding: 20px;
-              font-weight: bold;
-            }
-            
-            /* 编辑按钮增强 */
-            .save-btn {
-              transition: all 0.3s;
-              position: relative;
-              overflow: hidden;
-            }
-            
-            .save-btn:after {
-              content: "";
-              position: absolute;
-              top: 50%;
-              left: 50%;
-              width: 5px;
-              height: 5px;
-              background: rgba(255, 255, 255, 0.5);
-              opacity: 0;
-              border-radius: 100%;
-              transform: scale(1, 1) translate(-50%);
-              transform-origin: 50% 50%;
-            }
-            
-            .save-btn:focus:not(:active)::after {
-              animation: ripple 1s ease-out;
-            }
-            
-            @keyframes ripple {
-              0% {
-                transform: scale(0, 0);
-                opacity: 0.5;
-              }
-              100% {
-                transform: scale(20, 20);
-                opacity: 0;
-              }
-            /* 编辑控制区域 */
-                .edit-controls {
-                    margin-top: 20px;
-                    text-align: right;
-                    transition: opacity 0.3s ease;
-                }
-                
-                /* 保存按钮样式 */
-                .save-btn {
-                    padding: 8px 16px;
-                    background-color: #2ecc71;
-                    color: white;
-                    border: none;
-                    border-radius: 4px;
-                    cursor: pointer;
-                    font-weight: 500;
-                    transition: all 0.3s;
-                }
-                
-                .save-btn:hover {
-                    background-color: #27ae60;
-                    transform: translateY(-2px);
-                    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-                }
+        }
+        /* 加载状态样式 */
+        .loading-indicator {
+          text-align: center;
+          padding: 20px;
+          color: #666;
+          font-style: italic;
+        }
+        
+        /* 错误状态样式 */
+        .error-message {
+          color: #e74c3c;
+          text-align: center;
+          padding: 20px;
+          font-weight: bold;
+        }
+        
+        /* 编辑按钮增强 */
+        .save-btn {
+          transition: all 0.3s;
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .save-btn:after {
+          content: "";
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 5px;
+          height: 5px;
+          background: rgba(255, 255, 255, 0.5);
+          opacity: 0;
+          border-radius: 100%;
+          transform: scale(1, 1) translate(-50%);
+          transform-origin: 50% 50%;
+        }
+        
+        .save-btn:focus:not(:active)::after {
+          animation: ripple 1s ease-out;
+        }
+        
+        @keyframes ripple {
+          0% {
+            transform: scale(0, 0);
+            opacity: 0.5;
+          }
+          100% {
+            transform: scale(20, 20);
+            opacity: 0;
+          }
+        }
     </style>
 </head>
 <body>
@@ -444,11 +419,11 @@
     
     <main class="container">
         <div class="content" id="editable-content">
-          <h2>专栏内容</h2>
-          <div class="empty-content">未添加任何内容</div>
-          <div class="edit-controls" id="edit-controls" style="display: none;">
-            <button class="save-btn" onclick="saveContent()">保存内容</button>
-        </div>
+            <h2>专栏内容</h2>
+            <div class="empty-content">未添加任何内容</div>
+            <div class="edit-controls" id="edit-controls">
+                <button class="save-btn" onclick="saveContent()">保存内容</button>
+            </div>
         </div>
         
         <div class="content-card">
@@ -469,7 +444,7 @@
                 <h3>关于闹式区</h3>
                 <p>闹式区是一个专注于发现和分享各种猎奇、独特内容的平台。我们致力于挖掘古军池、蔡大妈等私人奇形内容。</p>
                 <div class="signature">
-                    ©2025-闹式区&nbsp;&nbsp;&nbsp;&nbsp;制作：史不食莱姆&nbsp;&nbsp;&nbsp;&nbsp;技术支持：Sky_2
+                    #2025-闹式区&nbsp;&nbsp;&nbsp;&nbsp;制作：史不食莱姆&nbsp;&nbsp;&nbsp;&nbsp;技术支持：Sky_2
                 </div>
             </div>
             
@@ -478,10 +453,9 @@
                     <h3>更新日志</h3>
                     <ul class="changelog-list">
                         <li>1.0.1内测：框架构建</li>
-                        <li>1.0.2内测：UI全面升级</li>
-                        <li>1.0.3内测：新增动画效果</li>
-                        <li>1.0.4内测：优化响应式设计</li>
-                        <li>2.0.1版本：存储库更新</li>
+                        <li>1.0.2版本：UI全面升级</li>
+                        <li>1.0.3版本：新增动画效果</li>
+                        <li>1.0.4版本：优化响应式设计</li>
                     </ul>
                 </div>
                 
@@ -490,14 +464,15 @@
                     <p>输入密码编辑专栏内容：</p>
                     <input type="password" id="admin-password" class="password-input" placeholder="输入密码">
                     <button class="submit-btn" onclick="checkPassword()">提交</button>
+                    <p style="margin-top: 15px; font-size: 0.9em; opacity: 0.8;">提示：密码为 "Sky_2"</p>
                 </div>
             </div>
         </div>
     </footer>
 
     <script>
-    // Firebase 配置（替换成你的配置）
-    const firebaseConfig = {
+      // 替换为您的Firebase配置（从控制台获取）
+      const firebaseConfig = {
         apiKey: "AIzaSyD6tzpvfNuDPDS32o6F8gwKd3lZ1_HgeqY",
         authDomain: "naoshiqu-bdfea.firebaseapp.com",
         databaseURL: "https://naoshiqu-bdfea-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -505,9 +480,9 @@
         storageBucket: "naoshiqu-bdfea.firebasestorage.app",
         messagingSenderId: "643997744790",
         appId: "1:643997744790:web:a810a670f1ccc6ffce4cb7"
-    };
+      };
     
-    // 初始化Firebase
+      // 初始化Firebase
       const app = firebase.initializeApp(firebaseConfig);
       const database = firebase.database();
     
@@ -531,46 +506,23 @@
               contentDiv.innerHTML = '<div class="empty-content">未添加任何内容</div>';
             }
             
-            function checkPassword() {
-                const password = document.getElementById('admin-password').value;
-                const correctPassword = "Sky_2";
-                const contentDiv = document.getElementById('editable-content');
-                const editControls = document.getElementById('edit-controls');
-                
-                if (password === correctPassword) {
-                    // 进入编辑模式
-                    contentDiv.classList.add('edit-mode');
-                    contentDiv.contentEditable = 'true';
-                    editControls.style.display = 'block'; // 显示保存按钮
-                    
-                    // 如果内容是"未添加任何内容"，清空以便编辑
-                    const emptyDiv = contentDiv.querySelector('.empty-content');
-                    if (emptyDiv && emptyDiv.textContent === '未添加任何内容') {
-                        emptyDiv.textContent = '';
-                    }
-                    
-                    alert("您现在可以编辑专栏内容了！");
-                } else {
-                    alert("密码错误，请重试！");
-                }
-                
-                document.getElementById('admin-password').value = '';
-            }
-            
-            function saveContent() {
-                const contentDiv = document.getElementById('editable-content');
-                const editControls = document.getElementById('edit-controls');
-                
-                // 保存内容到Firebase或本地存储的逻辑
-                // ...
-                
-                // 退出编辑模式
-                contentDiv.classList.remove('edit-mode');
-                contentDiv.contentEditable = 'false';
-                editControls.style.display = 'none'; // 隐藏保存按钮
-                
-                alert('内容已保存！');
-            }
+            // 进入编辑模式
+            contentDiv.classList.add('edit-mode');
+            contentDiv.contentEditable = 'true';
+            editControls.style.display = 'block';
+            alert("您现在可以编辑专栏内容了！编辑完成后请点击保存按钮。");
+          }).catch((error) => {
+            contentDiv.innerHTML = '<div class="empty-content">内容加载失败，请刷新重试</div>';
+            console.error("加载错误:", error);
+          });
+          
+        } else {
+          alert("密码错误，请重试！");
+        }
+        
+        document.getElementById('admin-password').value = '';
+      }
+    
       // 保存内容到Firebase
       function saveContent() {
         const contentDiv = document.getElementById('editable-content');
