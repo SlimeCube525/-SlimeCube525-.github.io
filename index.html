@@ -356,64 +356,33 @@
             h1 {
                 font-size: 2.5rem;
             }
-                    /* 多专栏布局 */
+                        /* 恢复容器样式 */
             .container {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-                gap: 30px;
+                max-width: 1000px;
+                margin: 0 auto;
                 padding: 20px;
             }
             
+            /* 内容区域样式 */
             .content {
+                background: white;
+                padding: 30px;
+                border-radius: 12px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+                margin-bottom: 30px;
                 min-height: 300px;
-                transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
             }
             
-            /* 悬停效果 */
-            .content:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            }
-            
-            /* 不同专栏的颜色区分 */
-            #editable-content-1 {
-                border-top: 4px solid #6e8efb;
-            }
-            #editable-content-2 {
-                border-top: 4px solid #a777e3;
-            }
-            #editable-content-3 {
-                border-top: 4px solid #e74c3c;
-            }
-            #editable-content-4 {
-                border-top: 4px solid #2ecc71;
-            }
+            /* 移除多专栏特有样式 */
+            #editable-content-1,
+            #editable-content-2,
+            #editable-content-3,
+            #editable-content-4,
             #editable-content-5 {
-                border-top: 4px solid #f39c12;
-            }
-            
-            /* 响应式调整 */
-            @media (max-width: 768px) {
-                .container {
-                    grid-template-columns: 1fr;
-                }
-            }
-                        /* 全局保存按钮样式 */
-            #global-save-btn {
-                transition: all 0.3s;
-                width: 100%;
-                padding: 12px;
-                font-weight: bold;
-            }
-            
-            #global-save-btn:hover {
-                background-color: #27ae60 !important;
-                transform: translateY(-2px);
-                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            }
-            
-            #global-save-btn:active {
-                transform: translateY(0);
+                /* 移除特殊样式 */
+                border-top: none;
             }
     </style>
 </head>
@@ -426,52 +395,15 @@
     </header>
     
             <main class="container">
-            <!--  -->
-            <div class="content" id="editable-content-1">
-                <h2>专栏1</h2>
-                <div class="empty-content">暂无内容，点击编辑添加</div>
-                <div class="edit-controls" id="edit-controls-1">
-                    <!-- 修改每个专栏的保存按钮 -->
-                    <button class="save-btn" onclick="saveColumnContent(1)">保存内容</button>
-                </div>
-            </div>
-        
-            <!--  -->
-            <div class="content" id="editable-content-2">
-                <h2>专栏2</h2>
-                <div class="empty-content">暂无内容，点击编辑添加</div>
-                <div class="edit-controls" id="edit-controls-2">
-                    <button class="save-btn" onclick="saveColumnContent(1)">保存内容</button>
-                </div>
-            </div>
-        
-            <!--  -->
-            <div class="content" id="editable-content-3">
-                <h2>专栏3</h2>
-                <div class="empty-content">暂无内容，点击编辑添加</div>
-                <div class="edit-controls" id="edit-controls-3">
-                    <button class="save-btn" onclick="saveColumnContent(1)">保存内容</button>
-                </div>
-            </div>
-        
-            <!--  -->
-            <div class="content" id="editable-content-4">
-                <h2>专栏4</h2>
-                <div class="empty-content">暂无内容，点击编辑添加</div>
-                <div class="edit-controls" id="edit-controls-4">
-                    <button class="save-btn" onclick="saveColumnContent(1)">保存内容</button>
-                </div>
-            </div>
-        
-            <!--  -->
-            <div class="content" id="editable-content-5">
-                <h2>专栏5</h2>
-                <div class="empty-content">暂无内容，点击编辑添加</div>
-                <div class="edit-controls" id="edit-controls-5">
-                    <button class="save-btn" onclick="saveColumnContent(1)">保存内容</button>
-                </div>
-            </div>
-        </main>
+    <!-- 恢复为单个专栏 -->
+    <div class="content" id="editable-content">
+        <h2>专栏内容</h2>
+        <div class="empty-content">未添加任何内容</div>
+        <div class="edit-controls" id="edit-controls">
+            <button class="save-btn" onclick="saveContent()">保存内容</button>
+        </div>
+    </div>
+    </main>
         
         <div class="content-card">
             <h2>特色内容预览</h2>
@@ -541,13 +473,31 @@
   function checkPassword() {
     const password = document.getElementById('admin-password').value;
     const correctPassword = "Sky_2";
+    const contentDiv = document.getElementById('editable-content');
+    const editControls = document.getElementById('edit-controls');
     
     if (password === correctPassword) {
-      // 加载所有专栏内容
-      for (let i = 1; i <= 5; i++) {
-        loadColumnContent(i);
-      }
-      alert("您现在可以编辑所有专栏内容了！");
+      // 显示全局保存按钮
+      document.getElementById('global-save-btn').style.display = 'block';
+      
+      // 从Firebase加载内容
+      database.ref('content').once('value').then((snapshot) => {
+        if (snapshot.exists()) {
+          contentDiv.innerHTML = snapshot.val();
+        } else {
+          contentDiv.innerHTML = '<div class="empty-content">未添加任何内容</div>';
+        }
+        
+        // 进入编辑模式
+        contentDiv.classList.add('edit-mode');
+        contentDiv.contentEditable = 'true';
+        editControls.style.display = 'block';
+      }).catch((error) => {
+        contentDiv.innerHTML = '<div class="empty-content">内容加载失败</div>';
+        console.error("加载错误:", error);
+      });
+      
+      alert("您现在可以编辑专栏内容了！");
     } else {
       alert("密码错误，请重试！");
     }
@@ -555,203 +505,55 @@
     document.getElementById('admin-password').value = '';
   }
 
-  // 加载单个专栏内容
-  function loadColumnContent(columnId) {
-    const contentDiv = document.getElementById(`editable-content-${columnId}`);
-    const editControls = document.getElementById(`edit-controls-${columnId}`);
-    
-    // 显示加载状态
-    contentDiv.innerHTML = '<div style="text-align:center;padding:20px;">加载中...</div>';
-    
-    // 从Firebase加载内容
-    database.ref(`columns/column${columnId}`).once('value').then((snapshot) => {
-      if (snapshot.exists()) {
-        const content = snapshot.val();
-        if (content && content.trim()) {
-          contentDiv.innerHTML = `<h2>${getColumnTitle(columnId)}</h2>` + content;
-        } else {
-          contentDiv.innerHTML = `<h2>${getColumnTitle(columnId)}</h2><div class="empty-content">暂无内容，点击编辑添加</div>`;
-        }
-      } else {
-        contentDiv.innerHTML = `<h2>${getColumnTitle(columnId)}</h2><div class="empty-content">暂无内容，点击编辑添加</div>`;
-      }
-      
-      // 进入编辑模式
-      contentDiv.classList.add('edit-mode');
-      contentDiv.contentEditable = 'true';
-      editControls.style.display = 'block';
-    }).catch((error) => {
-      contentDiv.innerHTML = `<h2>${getColumnTitle(columnId)}</h2><div class="empty-content">内容加载失败</div>`;
-      console.error(`专栏${columnId}加载错误:`, error);
-    });
-  }
-
-  // 保存单个专栏内容
-  function saveContent(columnId) {
-    const contentDiv = document.getElementById(`editable-content-${columnId}`);
-    const editControls = document.getElementById(`edit-controls-${columnId}`);
-    
-    // 获取纯内容（去除标题）
-    const content = contentDiv.innerHTML.replace(`<h2>${getColumnTitle(columnId)}</h2>`, '');
-    
-    // 显示保存状态
-    const originalContent = contentDiv.innerHTML;
-    contentDiv.innerHTML = originalContent + '<div style="text-align:center;color:#666;">保存中...</div>';
+  // 保存内容
+  function saveContent() {
+    const contentDiv = document.getElementById('editable-content');
+    const editControls = document.getElementById('edit-controls');
     
     // 保存到Firebase
-    database.ref(`columns/column${columnId}`).set(content)
+    database.ref('content').set(contentDiv.innerHTML)
       .then(() => {
         // 保存成功
-        contentDiv.innerHTML = `<h2>${getColumnTitle(columnId)}</h2>` + content;
         contentDiv.classList.remove('edit-mode');
         contentDiv.contentEditable = 'false';
         editControls.style.display = 'none';
         
         // 检查是否为空内容
-        if (!content.trim()) {
+        if (!contentDiv.textContent.trim() || contentDiv.textContent.trim() === '专栏内容') {
           const emptyDiv = document.createElement('div');
           emptyDiv.className = 'empty-content';
-          emptyDiv.textContent = '暂无内容，点击编辑添加';
+          emptyDiv.textContent = '未添加任何内容';
           contentDiv.appendChild(emptyDiv);
         }
+        
+        alert("内容已保存！");
       })
       .catch((error) => {
-        // 保存失败
-        contentDiv.innerHTML = originalContent;
-        alert(`专栏${columnId}保存失败: ${error.message}`);
-        console.error(`专栏${columnId}保存错误:`, error);
+        alert("保存失败: " + error.message);
+        console.error("保存错误:", error);
       });
   }
 
-  // 获取专栏标题
-  function getColumnTitle(columnId) {
-    const titles = {
-      1: '专栏1',
-      2: '专栏2',
-      3: '专栏3', 
-      4: '专栏4',
-      5: '专栏5'
-    };
-    return titles[columnId] || `专栏${columnId}`;
+  // 全局保存函数（保留但简化）
+  function saveAllColumns() {
+    saveContent(); // 现在只有一个专栏，直接调用saveContent
   }
 
-  // 页面加载时初始化所有专栏
+  // 页面加载时初始化
   window.onload = function() {
-    for (let i = 1; i <= 5; i++) {
-      const contentDiv = document.getElementById(`editable-content-${i}`);
-      contentDiv.innerHTML = `<h2>${getColumnTitle(i)}</h2><div style="text-align:center;padding:20px;">加载中...</div>`;
-      
-      database.ref(`columns/column${i}`).once('value').then((snapshot) => {
-        if (snapshot.exists()) {
-          const content = snapshot.val();
-          if (content && content.trim()) {
-            contentDiv.innerHTML = `<h2>${getColumnTitle(i)}</h2>` + content;
-          } else {
-            contentDiv.innerHTML = `<h2>${getColumnTitle(i)}</h2><div class="empty-content">暂无内容</div>`;
-          }
-        } else {
-          contentDiv.innerHTML = `<h2>${getColumnTitle(i)}</h2><div class="empty-content">暂无内容</div>`;
-        }
-      }).catch((error) => {
-        contentDiv.innerHTML = `<h2>${getColumnTitle(i)}</h2><div class="empty-content">内容加载失败</div>`;
-        console.error(`专栏${i}加载错误:`, error);
-      });
-// 新增函数：保存所有专栏内容
-function saveAllColumns() {
-    // 检查是否已通过密码验证
-    if (!document.getElementById('global-save-btn').style.display === 'block') {
-        alert("请先输入正确密码进入编辑模式");
-        return;
-    }
+    const contentDiv = document.getElementById('editable-content');
+    contentDiv.innerHTML = '<div style="text-align:center;padding:20px;">加载中...</div>';
     
-    // 保存所有五个专栏
-    const savePromises = [];
-    for (let i = 1; i <= 5; i++) {
-        if (document.getElementById(`editable-content-${i}`).contentEditable === 'true') {
-            savePromises.push(saveColumnContent(i, false));
-        }
-    }
-    
-    // 显示保存状态
-    const originalText = document.getElementById('global-save-btn').textContent;
-    document.getElementById('global-save-btn').textContent = "保存中...";
-    document.getElementById('global-save-btn').disabled = true;
-    
-    // 执行所有保存操作
-    Promise.all(savePromises)
-        .then(() => {
-            alert("所有专栏内容已保存！");
-        })
-        .catch((error) => {
-            console.error("保存错误:", error);
-            alert("部分内容保存失败，请检查控制台");
-        })
-        .finally(() => {
-            document.getElementById('global-save-btn').textContent = originalText;
-            document.getElementById('global-save-btn').disabled = false;
-        });
-
-        // 修改后的保存单个专栏函数（新增showAlert参数）
-        function saveColumnContent(columnId, showAlert = true) {
-            return new Promise((resolve, reject) => {
-                const contentDiv = document.getElementById(`editable-content-${columnId}`);
-                const editControls = document.getElementById(`edit-controls-${columnId}`);
-                
-                // 获取纯内容（去除标题）
-                const content = contentDiv.innerHTML.replace(`<h2>${getColumnTitle(columnId)}</h2>`, '');
-                
-                // 保存到Firebase
-                database.ref(`columns/column${columnId}`).set(content)
-                    .then(() => {
-                        // 保存成功
-                        contentDiv.innerHTML = `<h2>${getColumnTitle(columnId)}</h2>` + content;
-                        contentDiv.classList.remove('edit-mode');
-                        contentDiv.contentEditable = 'false';
-                        editControls.style.display = 'none';
-                        
-                        // 检查是否为空内容
-                        if (!content.trim()) {
-                            const emptyDiv = document.createElement('div');
-                            emptyDiv.className = 'empty-content';
-                            emptyDiv.textContent = '暂无内容，点击编辑添加';
-                            contentDiv.appendChild(emptyDiv);
-                        }
-                        
-                        if (showAlert) {
-                            alert(`专栏${columnId}内容已保存！`);
-                        }
-                        resolve();
-                    })
-                    .catch((error) => {
-                        if (showAlert) {
-                            alert(`专栏${columnId}保存失败: ${error.message}`);
-                        }
-                        console.error(`专栏${columnId}保存错误:`, error);
-                        reject(error);
-                    });
-            });
-        }
-        
-        // 修改checkPassword函数，在验证成功后显示全局保存按钮
-        function checkPassword() {
-            const password = document.getElementById('admin-password').value;
-            const correctPassword = "Sky_2";
-            
-            if (password === correctPassword) {
-                // 显示全局保存按钮
-                document.getElementById('global-save-btn').style.display = 'block';
-                
-                // 加载所有专栏内容
-                for (let i = 1; i <= 5; i++) {
-                    loadColumnContent(i);
-                }
-                alert("您现在可以编辑所有专栏内容了！编辑完成后可以单独保存或使用下方按钮一键保存所有专栏。");
-            } else {
-                alert("密码错误，请重试！");
-            }
-            
-            document.getElementById('admin-password').value = '';
-        }
+    database.ref('content').once('value').then((snapshot) => {
+      if (snapshot.exists()) {
+        contentDiv.innerHTML = snapshot.val();
+      } else {
+        contentDiv.innerHTML = '<div class="empty-content">未添加任何内容</div>';
+      }
+    }).catch((error) => {
+      contentDiv.innerHTML = '<div class="empty-content">内容加载失败</div>';
+      console.error("加载错误:", error);
+    });
   };
 </script>
 </body>
