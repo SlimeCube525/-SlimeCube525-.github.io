@@ -356,7 +356,48 @@
             h1 {
                 font-size: 2.5rem;
             }
-        }
+                    /* 多专栏布局 */
+            .container {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 30px;
+                padding: 20px;
+            }
+            
+            .content {
+                min-height: 300px;
+                transition: all 0.3s ease;
+            }
+            
+            /* 悬停效果 */
+            .content:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            }
+            
+            /* 不同专栏的颜色区分 */
+            #editable-content-1 {
+                border-top: 4px solid #6e8efb;
+            }
+            #editable-content-2 {
+                border-top: 4px solid #a777e3;
+            }
+            #editable-content-3 {
+                border-top: 4px solid #e74c3c;
+            }
+            #editable-content-4 {
+                border-top: 4px solid #2ecc71;
+            }
+            #editable-content-5 {
+                border-top: 4px solid #f39c12;
+            }
+            
+            /* 响应式调整 */
+            @media (max-width: 768px) {
+                .container {
+                    grid-template-columns: 1fr;
+                }
+            }
     </style>
 </head>
 <body>
@@ -367,14 +408,52 @@
         </div>
     </header>
     
-    <main class="container">
-        <div class="content" id="editable-content">
-            <h2>专栏内容</h2>
-            <div class="empty-content">未添加任何内容</div>
-            <div class="edit-controls" id="edit-controls">
-                <button class="save-btn" onclick="saveContent()">保存内容</button>
+            <main class="container">
+            <!--  -->
+            <div class="content" id="editable-content-1">
+                <h2>专栏1</h2>
+                <div class="empty-content">暂无内容，点击编辑添加</div>
+                <div class="edit-controls" id="edit-controls-1">
+                    <button class="save-btn" onclick="saveContent(1)">保存内容</button>
+                </div>
             </div>
-        </div>
+        
+            <!--  -->
+            <div class="content" id="editable-content-2">
+                <h2>专栏2</h2>
+                <div class="empty-content">暂无内容，点击编辑添加</div>
+                <div class="edit-controls" id="edit-controls-2">
+                    <button class="save-btn" onclick="saveContent(2)">保存内容</button>
+                </div>
+            </div>
+        
+            <!--  -->
+            <div class="content" id="editable-content-3">
+                <h2>专栏3</h2>
+                <div class="empty-content">暂无内容，点击编辑添加</div>
+                <div class="edit-controls" id="edit-controls-3">
+                    <button class="save-btn" onclick="saveContent(3)">保存内容</button>
+                </div>
+            </div>
+        
+            <!--  -->
+            <div class="content" id="editable-content-4">
+                <h2>专栏4</h2>
+                <div class="empty-content">暂无内容，点击编辑添加</div>
+                <div class="edit-controls" id="edit-controls-4">
+                    <button class="save-btn" onclick="saveContent(4)">保存内容</button>
+                </div>
+            </div>
+        
+            <!--  -->
+            <div class="content" id="editable-content-5">
+                <h2>专栏5</h2>
+                <div class="empty-content">暂无内容，点击编辑添加</div>
+                <div class="edit-controls" id="edit-controls-5">
+                    <button class="save-btn" onclick="saveContent(5)">保存内容</button>
+                </div>
+            </div>
+        </main>
         
         <div class="content-card">
             <h2>特色内容预览</h2>
@@ -403,10 +482,11 @@
                     <h3>更新日志</h3>
                     <ul class="changelog-list">
                         <li>1.0.1内测：框架构建</li>
-                        <li>1.0.2版本：UI全面升级</li>
-                        <li>1.0.3版本：新增动画效果</li>
-                        <li>1.0.4版本：优化响应式设计</li>
-                        <li>2.0.1版本：存储库更新</li>
+                        <li>1.0.2内测：UI全面升级</li>
+                        <li>1.0.3内测：新增动画效果</li>
+                        <li>1.0.4内测：优化响应式设计</li>
+                        <li>2.0.1正式：存储库更新</li>
+                        <li>2.0.2正式：优化布局</li>
                     </ul>
                 </div>
                 
@@ -421,87 +501,142 @@
     </footer>
     
     <script>
-    // Firebase 配置
-    const firebaseConfig = {
-        apiKey: "AIzaSyD6tzpvfNuDPDS32o6F8gwKd3lZ1_HgeqY",
-        authDomain: "naoshiqu-bdfea.firebaseapp.com",
-        databaseURL: "https://naoshiqu-bdfea-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "naoshiqu-bdfea",
-        storageBucket: "naoshiqu-bdfea.firebasestorage.app",
-        messagingSenderId: "643997744790",
-        appId: "1：643997744790：web：a810a670f1ccc6ffce4cb7"
-    };
+  // Firebase配置（替换为您自己的配置）
+  const firebaseConfig = {
+    apiKey: "AIzaSyD6tzpvfNuDPDS32o6F8gwKd3lZ1_HgeqY",
+    authDomain: "naoshiqu-bdfea.firebaseapp.com",
+    databaseURL: "https://naoshiqu-bdfea-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "naoshiqu-bdfea",
+    storageBucket: "naoshiqu-bdfea.firebasestorage.app",
+    messagingSenderId: "643997744790",
+    appId: "1:643997744790:web:a810a670f1ccc6ffce4cb7"
+  };
+
+  // 初始化Firebase
+  const app = firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+
+  // 检查密码并进入编辑模式
+  function checkPassword() {
+    const password = document.getElementById('admin-password').value;
+    const correctPassword = "Sky_2";
     
-    // 初始化 Firebase
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-    
-    // 检查密码并进入编辑模式
-    function checkPassword() {
-        const password = document.getElementById('admin-password').value;
-        const correctPassword = "Sky_2";
-        const contentDiv = document.getElementById('editable-content');
-        const editControls = document.getElementById('edit-controls');
-        
-        if (password === correctPassword) {
-            // 从 Firebase 加载内容
-            database.ref('naoshiContent').once('value').then((snapshot) => {
-                if (snapshot.exists()) {
-                    contentDiv.innerHTML = snapshot.val();
-                }
-            });
-            
-            // 进入编辑模式
-            contentDiv.classList.add('edit-mode');
-            contentDiv.contentEditable = 'true';
-            editControls.style.display = 'block';
-            
-            // 如果内容是"未添加任何内容"，清空以便编辑
-            const emptyDiv = contentDiv.querySelector('.empty-content');
-            if (emptyDiv && emptyDiv.textContent === '未添加任何内容') {
-                emptyDiv.textContent = '';
-            }
-            
-            alert("您现在可以编辑专栏内容了！编辑完成后请点击保存按钮。");
-        } else {
-            alert("密码错误，请重试！");
-        }
-        
-        document.getElementById('admin-password').value = '';
+    if (password === correctPassword) {
+      // 加载所有专栏内容
+      for (let i = 1; i <= 5; i++) {
+        loadColumnContent(i);
+      }
+      alert("您现在可以编辑所有专栏内容了！");
+    } else {
+      alert("密码错误，请重试！");
     }
     
-    // 保存内容到 Firebase
-    function saveContent() {
-        const contentDiv = document.getElementById('editable-content');
-        const editControls = document.getElementById('edit-controls');
-        
-        // 保存到 Firebase
-        database.ref('naoshiContent').set(contentDiv.innerHTML)
-            .then(() => alert("内容已保存！多设备同步生效。"))
-            .catch((error) => alert("保存失败: " + error.message));
-        
-        // 退出编辑模式
+    document.getElementById('admin-password').value = '';
+  }
+
+  // 加载单个专栏内容
+  function loadColumnContent(columnId) {
+    const contentDiv = document.getElementById(`editable-content-${columnId}`);
+    const editControls = document.getElementById(`edit-controls-${columnId}`);
+    
+    // 显示加载状态
+    contentDiv.innerHTML = '<div style="text-align:center;padding:20px;">加载中...</div>';
+    
+    // 从Firebase加载内容
+    database.ref(`columns/column${columnId}`).once('value').then((snapshot) => {
+      if (snapshot.exists()) {
+        const content = snapshot.val();
+        if (content && content.trim()) {
+          contentDiv.innerHTML = `<h2>${getColumnTitle(columnId)}</h2>` + content;
+        } else {
+          contentDiv.innerHTML = `<h2>${getColumnTitle(columnId)}</h2><div class="empty-content">暂无内容，点击编辑添加</div>`;
+        }
+      } else {
+        contentDiv.innerHTML = `<h2>${getColumnTitle(columnId)}</h2><div class="empty-content">暂无内容，点击编辑添加</div>`;
+      }
+      
+      // 进入编辑模式
+      contentDiv.classList.add('edit-mode');
+      contentDiv.contentEditable = 'true';
+      editControls.style.display = 'block';
+    }).catch((error) => {
+      contentDiv.innerHTML = `<h2>${getColumnTitle(columnId)}</h2><div class="empty-content">内容加载失败</div>`;
+      console.error(`专栏${columnId}加载错误:`, error);
+    });
+  }
+
+  // 保存单个专栏内容
+  function saveContent(columnId) {
+    const contentDiv = document.getElementById(`editable-content-${columnId}`);
+    const editControls = document.getElementById(`edit-controls-${columnId}`);
+    
+    // 获取纯内容（去除标题）
+    const content = contentDiv.innerHTML.replace(`<h2>${getColumnTitle(columnId)}</h2>`, '');
+    
+    // 显示保存状态
+    const originalContent = contentDiv.innerHTML;
+    contentDiv.innerHTML = originalContent + '<div style="text-align:center;color:#666;">保存中...</div>';
+    
+    // 保存到Firebase
+    database.ref(`columns/column${columnId}`).set(content)
+      .then(() => {
+        // 保存成功
+        contentDiv.innerHTML = `<h2>${getColumnTitle(columnId)}</h2>` + content;
         contentDiv.classList.remove('edit-mode');
         contentDiv.contentEditable = 'false';
         editControls.style.display = 'none';
         
-        // 如果内容为空，恢复默认提示
-        if (!contentDiv.textContent.trim() || contentDiv.textContent.trim() === '专栏内容') {
-            const emptyDiv = document.createElement('div');
-            emptyDiv.className = 'empty-content';
-            emptyDiv.textContent = '未添加任何内容';
-            contentDiv.appendChild(emptyDiv);
+        // 检查是否为空内容
+        if (!content.trim()) {
+          const emptyDiv = document.createElement('div');
+          emptyDiv.className = 'empty-content';
+          emptyDiv.textContent = '暂无内容，点击编辑添加';
+          contentDiv.appendChild(emptyDiv);
         }
-    }
-    
-    // 页面加载时自动从 Firebase 加载内容
-    window.onload = function() {
-        database.ref('naoshiContent').once('value').then((snapshot) => {
-            if (snapshot.exists()) {
-                document.getElementById('editable-content').innerHTML = snapshot.val();
-            }
-        });
+      })
+      .catch((error) => {
+        // 保存失败
+        contentDiv.innerHTML = originalContent;
+        alert(`专栏${columnId}保存失败: ${error.message}`);
+        console.error(`专栏${columnId}保存错误:`, error);
+      });
+  }
+
+  // 获取专栏标题
+  function getColumnTitle(columnId) {
+    const titles = {
+      1: '专栏1',
+      2: '专栏2',
+      3: '专栏3', 
+      4: '专栏4',
+      5: '专栏5'
     };
-    </script>
+    return titles[columnId] || `专栏${columnId}`;
+  }
+
+  // 页面加载时初始化所有专栏
+  window.onload = function() {
+    for (let i = 1; i <= 5; i++) {
+      const contentDiv = document.getElementById(`editable-content-${i}`);
+      contentDiv.innerHTML = `<h2>${getColumnTitle(i)}</h2><div style="text-align:center;padding:20px;">加载中...</div>`;
+      
+      database.ref(`columns/column${i}`).once('value').then((snapshot) => {
+        if (snapshot.exists()) {
+          const content = snapshot.val();
+          if (content && content.trim()) {
+            contentDiv.innerHTML = `<h2>${getColumnTitle(i)}</h2>` + content;
+          } else {
+            contentDiv.innerHTML = `<h2>${getColumnTitle(i)}</h2><div class="empty-content">暂无内容</div>`;
+          }
+        } else {
+          contentDiv.innerHTML = `<h2>${getColumnTitle(i)}</h2><div class="empty-content">暂无内容</div>`;
+        }
+      }).catch((error) => {
+        contentDiv.innerHTML = `<h2>${getColumnTitle(i)}</h2><div class="empty-content">内容加载失败</div>`;
+        console.error(`专栏${i}加载错误:`, error);
+      });
+    }
+  };
+</script>
 </body>
 </html>
