@@ -384,6 +384,41 @@
                 /* 移除特殊样式 */
                 border-top: none;
             }
+            /* 标题区样式 */
+            .header-section {
+                background: linear-gradient(135deg, #6e8efb, #a777e3);
+                color: white;
+                padding: 30px;
+                border-radius: 12px;
+                margin-bottom: 20px;
+                text-align: center;
+                position: relative;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            }
+            
+            #column-title {
+                font-size: 2.5rem;
+                margin: 0;
+                padding: 0;
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+                min-height: 60px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            /* 标题编辑模式 */
+            #column-title[edit-mode] {
+                background: rgba(255,255,255,0.2);
+                padding: 15px;
+                border-radius: 8px;
+                border: 2px dashed white;
+            }
+            
+            .title-edit-controls {
+                margin-top: 20px;
+                text-align: center;
+            }
     </style>
 </head>
 <body>
@@ -394,15 +429,23 @@
         </div>
     </header>
     
-            <main class="container">
-    <!-- 恢复为单个专栏 -->
-    <div class="content" id="editable-content">
-        <h2>专栏内容</h2>
-        <div class="empty-content">未添加任何内容</div>
-        <div class="edit-controls" id="edit-controls">
-            <button class="save-btn" onclick="saveContent()">保存内容</button>
+    <main class="container">
+        <!-- 新增标题区 -->
+        <div class="header-section" id="title-section">
+            <h1 id="column-title" contenteditable="false">闹式区专栏</h1>
+            <div class="title-edit-controls" id="title-edit-controls" style="display: none;">
+                <button class="save-btn" onclick="saveTitle()">保存标题</button>
+            </div>
         </div>
-    </div>
+    
+        <!-- 内容区 -->
+        <div class="content" id="editable-content">
+            <h2>专栏内容</h2>
+            <div class="empty-content">未添加任何内容</div>
+            <div class="edit-controls" id="edit-controls">
+                <button class="save-btn" onclick="saveContent()">保存内容</button>
+            </div>
+        </div>
     </main>
         
         <div class="content-card">
@@ -538,6 +581,97 @@
   function saveAllColumns() {
     saveContent(); // 现在只有一个专栏，直接调用saveContent
   }
+    // 修改checkPassword函数
+function checkPassword() {
+    const password = document.getElementById('admin-password').value;
+    const correctPassword = "Sky_2";
+    const contentDiv = document.getElementById('editable-content');
+    const editControls = document.getElementById('edit-controls');
+    const titleElement = document.getElementById('column-title');
+    const titleEditControls = document.getElementById('title-edit-controls');
+    
+    if (password === correctPassword) {
+        // 显示全局保存按钮
+        document.getElementById('global-save-btn').style.display = 'block';
+        
+        // 从Firebase加载内容和标题
+        database.ref('content').once('value').then((snapshot) => {
+            if (snapshot.exists()) {
+                contentDiv.innerHTML = snapshot.val();
+            } else {
+                contentDiv.innerHTML = '<div class="empty-content">未添加任何内容</div>';
+            }
+        });
+        
+        database.ref('title').once('value').then((snapshot) => {
+            if (snapshot.exists()) {
+                titleElement.textContent = snapshot.val();
+            }
+        });
+        
+        // 进入编辑模式
+        contentDiv.classList.add('edit-mode');
+        contentDiv.contentEditable = 'true';
+        editControls.style.display = 'block';
+        
+        titleElement.contentEditable = 'true';
+        titleElement.setAttribute('edit-mode', '');
+        titleEditControls.style.display = 'block';
+        
+        alert("您现在可以编辑专栏标题和内容了！");
+    } else {
+        alert("密码错误，请重试！");
+    }
+    
+    document.getElementById('admin-password').value = '';
+}
+
+// 新增保存标题函数
+function saveTitle() {
+    const titleElement = document.getElementById('column-title');
+    const titleEditControls = document.getElementById('title-edit-controls');
+    
+    database.ref('title').set(titleElement.textContent)
+        .then(() => {
+            titleElement.contentEditable = 'false';
+            titleElement.removeAttribute('edit-mode');
+            titleEditControls.style.display = 'none';
+            alert("标题已保存！");
+        })
+        .catch((error) => {
+            alert("标题保存失败: " + error.message);
+        });
+}
+
+        // 修改全局保存函数
+        function saveAllColumns() {
+            saveTitle();
+            saveContent();
+        }
+        
+        // 修改页面加载函数
+        window.onload = function() {
+            const contentDiv = document.getElementById('editable-content');
+            const titleElement = document.getElementById('column-title');
+            
+            contentDiv.innerHTML = '<div style="text-align:center;padding:20px;">加载中...</div>';
+            
+            // 加载内容
+            database.ref('content').once('value').then((snapshot) => {
+                if (snapshot.exists()) {
+                    contentDiv.innerHTML = snapshot.val();
+                } else {
+                    contentDiv.innerHTML = '<div class="empty-content">未添加任何内容</div>';
+                }
+            });
+            
+            // 加载标题
+            database.ref('title').once('value').then((snapshot) => {
+                if (snapshot.exists()) {
+                    titleElement.textContent = snapshot.val();
+                }
+            });
+        };
 
   // 页面加载时初始化
   window.onload = function() {
