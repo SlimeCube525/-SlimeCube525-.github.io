@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <!-- 在 <head> 里添加 Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
     <meta charset="UTF-8">
@@ -356,69 +355,7 @@
             h1 {
                 font-size: 2.5rem;
             }
-                        /* 恢复容器样式 */
-            .container {
-                max-width: 1000px;
-                margin: 0 auto;
-                padding: 20px;
-            }
-            
-            /* 内容区域样式 */
-            .content {
-                background: white;
-                padding: 30px;
-                border-radius: 12px;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-                margin-bottom: 30px;
-                min-height: 300px;
-                position: relative;
-                overflow: hidden;
-            }
-            
-            /* 移除多专栏特有样式 */
-            #editable-content-1,
-            #editable-content-2,
-            #editable-content-3,
-            #editable-content-4,
-            #editable-content-5 {
-                /* 移除特殊样式 */
-                border-top: none;
-            }
-            /* 标题区样式 */
-            .header-section {
-                background: linear-gradient(135deg, #6e8efb, #a777e3);
-                color: white;
-                padding: 30px;
-                border-radius: 12px;
-                margin-bottom: 20px;
-                text-align: center;
-                position: relative;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            }
-            
-            #column-title {
-                font-size: 2.5rem;
-                margin: 0;
-                padding: 0;
-                text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-                min-height: 60px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            
-            /* 标题编辑模式 */
-            #column-title[edit-mode] {
-                background: rgba(255,255,255,0.2);
-                padding: 15px;
-                border-radius: 8px;
-                border: 2px dashed white;
-            }
-            
-            .title-edit-controls {
-                margin-top: 20px;
-                text-align: center;
-            }
+        }
     </style>
 </head>
 <body>
@@ -430,15 +367,6 @@
     </header>
     
     <main class="container">
-        <!-- 新增标题区 -->
-        <div class="header-section" id="title-section">
-            <h1 id="column-title" contenteditable="false">闹式区专栏</h1>
-            <div class="title-edit-controls" id="title-edit-controls" style="display: none;">
-                <button class="save-btn" onclick="saveTitle()">保存标题</button>
-            </div>
-        </div>
-    
-        <!-- 内容区 -->
         <div class="content" id="editable-content">
             <h2>专栏内容</h2>
             <div class="empty-content">未添加任何内容</div>
@@ -446,7 +374,6 @@
                 <button class="save-btn" onclick="saveContent()">保存内容</button>
             </div>
         </div>
-    </main>
         
         <div class="content-card">
             <h2>特色内容预览</h2>
@@ -475,220 +402,105 @@
                     <h3>更新日志</h3>
                     <ul class="changelog-list">
                         <li>1.0.1内测：框架构建</li>
-                        <li>1.0.2内测：UI全面升级</li>
-                        <li>1.0.3内测：新增动画效果</li>
-                        <li>1.0.4内测：优化响应式设计</li>
-                        <li>2.0.1正式：存储库更新</li>
-                        <li>2.0.2正式：优化布局</li>
+                        <li>1.0.2版本：UI全面升级</li>
+                        <li>1.0.3版本：新增动画效果</li>
+                        <li>1.0.4版本：优化响应式设计</li>
                     </ul>
                 </div>
                 
                 <div class="admin-section">
-                <h3>管理员登录</h3>
-                <p>输入密码编辑专栏内容：</p>
-                <input type="password" id="admin-password" class="password-input" placeholder="输入密码">
-                <button class="submit-btn" onclick="checkPassword()">提交</button>                
-                <!-- 新增的保存内容按钮（默认隐藏） -->
-                <button id="global-save-btn" class="submit-btn" style="display: none; margin-top: 15px; background-color: #2ecc71;" onclick="saveAllColumns()">
-                    保存所有专栏内容
-                </button>
+                    <h3>管理员登录</h3>
+                    <p>输入密码编辑专栏内容：</p>
+                    <input type="password" id="admin-password" class="password-input" placeholder="输入密码">
+                    <button class="submit-btn" onclick="checkPassword()">提交</button>
+                    <p style="margin-top: 15px; font-size: 0.9em; opacity: 0.8;">提示：密码为 "Sky_2"</p>
+                </div>
             </div>
         </div>
     </footer>
-    
+
     <script>
-  // Firebase配置（替换为您自己的配置）
-  const firebaseConfig = {
-    apiKey: "AIzaSyD6tzpvfNuDPDS32o6F8gwKd3lZ1_HgeqY",
-    authDomain: "naoshiqu-bdfea.firebaseapp.com",
-    databaseURL: "https://naoshiqu-bdfea-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "naoshiqu-bdfea",
-    storageBucket: "naoshiqu-bdfea.firebasestorage.app",
-    messagingSenderId: "643997744790",
-    appId: "1:643997744790:web:a810a670f1ccc6ffce4cb7"
-  };
-
-  // 初始化Firebase
-  const app = firebase.initializeApp(firebaseConfig);
-  const database = firebase.database();
-
-  // 检查密码并进入编辑模式
-  function checkPassword() {
-    const password = document.getElementById('admin-password').value;
-    const correctPassword = "Sky_2";
-    const contentDiv = document.getElementById('editable-content');
-    const editControls = document.getElementById('edit-controls');
+    // Firebase 配置（替换成你的配置）
+    const firebaseConfig = {
+        apiKey: "AIzaSyD6tzpvfNuDPDS32o6F8gwKd3lZ1_HgeqY",
+        authDomain: "naoshiqu-bdfea.firebaseapp.com",
+        databaseURL: "https://naoshiqu-bdfea-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "naoshiqu-bdfea",
+        storageBucket: "naoshiqu-bdfea.firebasestorage.app",
+        messagingSenderId: "643997744790",
+        appId: "1:643997744790:web:a810a670f1ccc6ffce4cb7"
+    };
     
-    if (password === correctPassword) {
-      // 显示全局保存按钮
-      document.getElementById('global-save-btn').style.display = 'block';
-      
-      // 从Firebase加载内容
-      database.ref('content').once('value').then((snapshot) => {
-        if (snapshot.exists()) {
-          contentDiv.innerHTML = snapshot.val();
+    // 初始化 Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    
+    // 检查密码并进入编辑模式
+    function checkPassword() {
+        const password = document.getElementById('admin-password').value;
+        const correctPassword = "Sky_2";
+        const contentDiv = document.getElementById('editable-content');
+        const editControls = document.getElementById('edit-controls');
+        
+        if (password === correctPassword) {
+            // 从 Firebase 加载内容
+            database.ref('naoshiContent').once('value').then((snapshot) => {
+                if (snapshot.exists()) {
+                    contentDiv.innerHTML = snapshot.val();
+                }
+            });
+            
+            // 进入编辑模式
+            contentDiv.classList.add('edit-mode');
+            contentDiv.contentEditable = 'true';
+            editControls.style.display = 'block';
+            
+            // 如果内容是"未添加任何内容"，清空以便编辑
+            const emptyDiv = contentDiv.querySelector('.empty-content');
+            if (emptyDiv && emptyDiv.textContent === '未添加任何内容') {
+                emptyDiv.textContent = '';
+            }
+            
+            alert("您现在可以编辑专栏内容了！编辑完成后请点击保存按钮。");
         } else {
-          contentDiv.innerHTML = '<div class="empty-content">未添加任何内容</div>';
+            alert("密码错误，请重试！");
         }
         
-        // 进入编辑模式
-        contentDiv.classList.add('edit-mode');
-        contentDiv.contentEditable = 'true';
-        editControls.style.display = 'block';
-      }).catch((error) => {
-        contentDiv.innerHTML = '<div class="empty-content">内容加载失败</div>';
-        console.error("加载错误:", error);
-      });
-      
-      alert("您现在可以编辑专栏内容了！");
-    } else {
-      alert("密码错误，请重试！");
+        document.getElementById('admin-password').value = '';
     }
     
-    document.getElementById('admin-password').value = '';
-  }
-
-  // 保存内容
-  function saveContent() {
-    const contentDiv = document.getElementById('editable-content');
-    const editControls = document.getElementById('edit-controls');
-    
-    // 保存到Firebase
-    database.ref('content').set(contentDiv.innerHTML)
-      .then(() => {
-        // 保存成功
+    // 保存内容到 Firebase
+    function saveContent() {
+        const contentDiv = document.getElementById('editable-content');
+        const editControls = document.getElementById('edit-controls');
+        
+        // 保存到 Firebase
+        database.ref('naoshiContent').set(contentDiv.innerHTML)
+            .then(() => alert("内容已保存！多设备同步生效。"))
+            .catch((error) => alert("保存失败: " + error.message));
+        
+        // 退出编辑模式
         contentDiv.classList.remove('edit-mode');
         contentDiv.contentEditable = 'false';
         editControls.style.display = 'none';
         
-        // 检查是否为空内容
+        // 如果内容为空，恢复默认提示
         if (!contentDiv.textContent.trim() || contentDiv.textContent.trim() === '专栏内容') {
-          const emptyDiv = document.createElement('div');
-          emptyDiv.className = 'empty-content';
-          emptyDiv.textContent = '未添加任何内容';
-          contentDiv.appendChild(emptyDiv);
+            const emptyDiv = document.createElement('div');
+            emptyDiv.className = 'empty-content';
+            emptyDiv.textContent = '未添加任何内容';
+            contentDiv.appendChild(emptyDiv);
         }
-        
-        alert("内容已保存！");
-      })
-      .catch((error) => {
-        alert("保存失败: " + error.message);
-        console.error("保存错误:", error);
-      });
-  }
-
-  // 全局保存函数（保留但简化）
-  function saveAllColumns() {
-    saveContent(); // 现在只有一个专栏，直接调用saveContent
-  }
-    // 修改checkPassword函数
-function checkPassword() {
-    const password = document.getElementById('admin-password').value;
-    const correctPassword = "Sky_2";
-    const contentDiv = document.getElementById('editable-content');
-    const editControls = document.getElementById('edit-controls');
-    const titleElement = document.getElementById('column-title');
-    const titleEditControls = document.getElementById('title-edit-controls');
-    
-    if (password === correctPassword) {
-        // 显示全局保存按钮
-        document.getElementById('global-save-btn').style.display = 'block';
-        
-        // 从Firebase加载内容和标题
-        database.ref('content').once('value').then((snapshot) => {
-            if (snapshot.exists()) {
-                contentDiv.innerHTML = snapshot.val();
-            } else {
-                contentDiv.innerHTML = '<div class="empty-content">未添加任何内容</div>';
-            }
-        });
-        
-        database.ref('title').once('value').then((snapshot) => {
-            if (snapshot.exists()) {
-                titleElement.textContent = snapshot.val();
-            }
-        });
-        
-        // 进入编辑模式
-        contentDiv.classList.add('edit-mode');
-        contentDiv.contentEditable = 'true';
-        editControls.style.display = 'block';
-        
-        titleElement.contentEditable = 'true';
-        titleElement.setAttribute('edit-mode', '');
-        titleEditControls.style.display = 'block';
-        
-        alert("您现在可以编辑专栏标题和内容了！");
-    } else {
-        alert("密码错误，请重试！");
     }
     
-    document.getElementById('admin-password').value = '';
-}
-
-// 新增保存标题函数
-function saveTitle() {
-    const titleElement = document.getElementById('column-title');
-    const titleEditControls = document.getElementById('title-edit-controls');
-    
-    database.ref('title').set(titleElement.textContent)
-        .then(() => {
-            titleElement.contentEditable = 'false';
-            titleElement.removeAttribute('edit-mode');
-            titleEditControls.style.display = 'none';
-            alert("标题已保存！");
-        })
-        .catch((error) => {
-            alert("标题保存失败: " + error.message);
+    // 页面加载时自动从 Firebase 加载内容
+    window.onload = function() {
+        database.ref('naoshiContent').once('value').then((snapshot) => {
+            if (snapshot.exists()) {
+                document.getElementById('editable-content').innerHTML = snapshot.val();
+            }
         });
-}
-
-        // 修改全局保存函数
-        function saveAllColumns() {
-            saveTitle();
-            saveContent();
-        }
-        
-        // 修改页面加载函数
-        window.onload = function() {
-            const contentDiv = document.getElementById('editable-content');
-            const titleElement = document.getElementById('column-title');
-            
-            contentDiv.innerHTML = '<div style="text-align:center;padding:20px;">加载中...</div>';
-            
-            // 加载内容
-            database.ref('content').once('value').then((snapshot) => {
-                if (snapshot.exists()) {
-                    contentDiv.innerHTML = snapshot.val();
-                } else {
-                    contentDiv.innerHTML = '<div class="empty-content">未添加任何内容</div>';
-                }
-            });
-            
-            // 加载标题
-            database.ref('title').once('value').then((snapshot) => {
-                if (snapshot.exists()) {
-                    titleElement.textContent = snapshot.val();
-                }
-            });
-        };
-
-  // 页面加载时初始化
-  window.onload = function() {
-    const contentDiv = document.getElementById('editable-content');
-    contentDiv.innerHTML = '<div style="text-align:center;padding:20px;">加载中...</div>';
-    
-    database.ref('content').once('value').then((snapshot) => {
-      if (snapshot.exists()) {
-        contentDiv.innerHTML = snapshot.val();
-      } else {
-        contentDiv.innerHTML = '<div class="empty-content">未添加任何内容</div>';
-      }
-    }).catch((error) => {
-      contentDiv.innerHTML = '<div class="empty-content">内容加载失败</div>';
-      console.error("加载错误:", error);
-    });
-  };
-</script>
+    };
+    </script>
 </body>
 </html>
